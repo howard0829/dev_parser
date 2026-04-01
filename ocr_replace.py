@@ -24,7 +24,12 @@ from pathlib import Path
 import pytesseract
 from PIL import Image, ImageEnhance, ImageOps
 
-os.environ["PATH"] = "/opt/homebrew/bin:" + os.environ.get("PATH", "")
+# Tesseract PATH 설정 (OS별 자동 감지)
+# macOS (Homebrew): /opt/homebrew/bin
+# Ubuntu (apt): /usr/bin에 이미 포함
+import platform
+if platform.system() == "Darwin":
+    os.environ["PATH"] = "/opt/homebrew/bin:" + os.environ.get("PATH", "")
 
 BASE_DIR               = Path(__file__).parent
 DIAGRAM_SIZE_THRESHOLD = 5_000   # 5 KB 이상 → 다이어그램으로 유지

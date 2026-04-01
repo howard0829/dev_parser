@@ -18,7 +18,13 @@ import sys
 import time
 from pathlib import Path
 
-os.environ["PATH"] = "/opt/homebrew/opt/openjdk@21/bin:" + os.environ.get("PATH", "")
+# Java PATH 설정 (OS별 자동 감지)
+# macOS (Homebrew): /opt/homebrew/opt/openjdk@21/bin
+# Ubuntu (apt/Adoptium): /usr/lib/jvm/temurin-21-*/bin 또는 시스템 PATH에 이미 포함
+import platform
+if platform.system() == "Darwin":
+    # macOS: Homebrew로 설치된 Java 21 경로 추가
+    os.environ["PATH"] = "/opt/homebrew/opt/openjdk@21/bin:" + os.environ.get("PATH", "")
 
 import opendataloader_pdf
 
