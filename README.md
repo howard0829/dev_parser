@@ -8,6 +8,10 @@ OCR 후처리를 통해 이미지로 렌더링된 텍스트(섹션번호, 레이
 ## 처리 파이프라인
 
 ```
+# 통합 실행 (1단계 + 2단계 한 번에)
+python run.py <PDF경로>
+
+# 또는 단계별 실행
 python parse.py <PDF경로>
 python ocr_replace.py <PDF경로>
 ```
@@ -34,6 +38,7 @@ PDF
 
 ```
 OpenDataLoader/
+├── run.py              # 통합 실행 (Step 1 + Step 2 한 번에)
 ├── parse.py            # Step 1: PDF → Markdown 변환
 ├── ocr_replace.py      # Step 2: OCR 후처리 + 헤딩 구조화
 ├── requirements.txt    # Python 의존성
@@ -58,6 +63,7 @@ OpenDataLoader/
 |---|---|---|---|---|
 | NVMe Base Spec Rev 2.3 | 12 MB, 784p | 2.5 MB | 1,106개 | 876 / 30 / 200 |
 | Datacenter NVMe SSD Spec v2.6 | 4.2 MB, 211p | 438 KB | 31개 | 2 / 20 / 9 |
+| NVMe-MI Spec Rev 2.1 | 3.3 MB, 210p | 622 KB | 248개 | 65 / 5 / 178 |
 
 ---
 
@@ -130,19 +136,40 @@ PDF에서 섹션번호가 이미지로 렌더링된 경우, OCR 복원 후 다�
 
 ## 사용법
 
-```bash
-# Step 1: PDF → Markdown 변환
-python parse.py <PDF경로>
+### 통합 실행 (권장)
 
-# Step 2: OCR 후처리
-python ocr_replace.py <PDF경로>
+`run.py` 하나로 1단계(변환)와 2단계(OCR 후처리)를 순차로 실행합니다.
+
+```bash
+python run.py <PDF경로>
 ```
 
 예시:
 
 ```bash
-python parse.py "/path/to/Datacenter NVMe SSD Specification v2.6.pdf"
-python ocr_replace.py "/path/to/Datacenter NVMe SSD Specification v2.6.pdf"
+python run.py "/path/to/Datacenter NVMe SSD Specification v2.6.pdf"
+```
+
+| 옵션 | 설명 |
+|---|---|
+| `--output-dir ./output` | 출력 루트 디렉토리 지정 (기본: `./output`) |
+| `--skip-parse` | 1단계를 건너뛰고 OCR 후처리만 실행 (이미 변환된 경우, OCR 튜닝 시 유용) |
+
+```bash
+# 이미 parse된 결과에 OCR 후처리만 다시 실행
+python run.py /path/to/doc.pdf --skip-parse
+```
+
+### 단계별 실행
+
+개별 단계만 실행하거나 디버깅할 때 사용합니다.
+
+```bash
+# Step 1: PDF → Markdown 변환
+python parse.py <PDF경로>
+
+# Step 2: OCR 후처리 (Step 1 출력물 필요)
+python ocr_replace.py <PDF경로>
 ```
 
 출력 디렉토리를 지정하려면 `--output-dir` 옵션을 사용합니다.
